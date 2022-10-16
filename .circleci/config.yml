@@ -225,36 +225,30 @@ jobs:
 
   run-migrations:
     docker:
+      # Docker image here that supports NodeJS
       - image: cimg/node:13.14.0
     steps:
+      # Checkout code from git
       - checkout
-      - restore_cache:
-          keys:
-            - backend-build
       - run:
-          name: Running migrations
+          name: Run migrations
           command: |
-            cd backend
-            npm run migrations > migrations_dump.txt
-            cat migrations_dump.txt
+              cd backend
+              npm install
+              npm audit fix --audit-level=critical
+              npm run migrations > migrations_dump.txt
       - run:
-          name: Sending migration status to thisdb.com
-          command: |
-            if grep -q "has been executed successfully" ./backend/migrations_dump.txt
+          name: Send migration status to memstash.io
+          command: |   
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl "https://api.thisdb.com/v1/${THISDB_BUCKET}/migration-${CIRCLE_WORKFLOW_ID:0:7}" \
-                -H "X-Api-Key: ${THISDB_API_KEY}" \
-                -d "1"
-            else
-              curl "https://api.thisdb.com/v1/${THISDB_BUCKET}/migration-${CIRCLE_WORKFLOW_ID:0:7}" \
-                -H "X-Api-Key: ${THISDB_API_KEY}" \
-                -d "0"
+              # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the website
+              curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+              # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
+              curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
-      - destroy-environment:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'
-      - revert-migrations:
-          workflow_id: '${CIRCLE_WORKFLOW_ID:0:7}'    
-          
+     # Here's where you will add some code to rollback on failure
+
   deploy-frontend:
     docker:
       - image: circleci/node:13.8.0
