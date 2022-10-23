@@ -221,7 +221,6 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-      - run:
           name: Configure Server
           command: |
             cd .circleci/ansible
@@ -246,17 +245,17 @@ jobs:
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
-       - run:
+      - run:
           name: Store migration result in a file. #can't open memstash.io or kvdb.io in my browser
           command: |
             cd backend
             if grep -q "has been executed successfully." migrations_dump.txt
             then
-            cat > migration_state
-            1
+              cat > migration_state
+              1
             else
-            cat > migration_state
-            0
+              cat > migration_state
+              0
             fi      
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -290,15 +289,15 @@ jobs:
 
             echo "API_URL=http://${BACKEND_PUBLIC_IP}:3030" >> frontend/.env
             cat frontend/.env
-        - run:
-            name: Deploy frontend objects
-            command: |
-              cd frontend
-              npm run build
-              aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-        - destroy-environment:
-            workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-        - revert-migrations    
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm run build
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations    
 
   deploy-backend:
     docker:
@@ -414,7 +413,10 @@ jobs:
       - image: cimg/python:3.10
     steps:
       - checkout            
-      - install-dependencies 
+      - attach_workspace:
+          at: ~/
+      - install_ansible
+      - install_awscli
       - run:
           name: Removing old stacks and files
           command: |
