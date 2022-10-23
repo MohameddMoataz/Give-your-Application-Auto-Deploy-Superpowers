@@ -9,31 +9,31 @@
     apt:
       upgrade: yes
 
-- name: "installing npm"
-  become: yes
-  apt:
-    name: npm
-    update_cache: yes
-    state: latest
+  - name: "installing npm"
+    become: yes
+    apt:
+      name: npm
+      update_cache: yes
+      state: latest
 
-- name: "Install nvm"
-  become: yes
-  npm:
-    name: n
-    global: yes
-    
-- name: "Install Node.js 13"
-  shell: |
-    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+  - name: "Install nvm"
+    become: yes
+    npm:
+      name: n
+      global: yes
 
-    sudo npm install -g n
-    sudo n 13.8.0    
+  - name: "Install Node.js 13"
+    shell: |
+      curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+      sudo apt-get install -y nodejs
 
-- name: "install pm2"
-  become: true
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
+      sudo npm install -g n
+      sudo n 13.8.0    
+
+  - name: "install pm2"
+    become: true
+    npm:
+      name: pm2
+      global: yes
+      production: yes
+      state: present
