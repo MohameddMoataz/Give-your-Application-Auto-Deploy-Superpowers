@@ -367,7 +367,6 @@ jobs:
       - install_nodejs
       - attach_workspace:
           at: ~/
-
       - run:
           name: backend smoke test
           command: |
