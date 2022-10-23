@@ -246,16 +246,14 @@ jobs:
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - run:
-          name: Store migration result in a file. #can't open memstash.io or kvdb.io in my browser
+          name: Store migration result in a file. #can't open memstash.io or kvdb.io 
           command: |
             cd backend
             if grep -q "has been executed successfully." migrations_dump.txt
             then
-              cat > migration_state
-              1
+              cat > migration_state 1
             else
-              cat > migration_state
-              0
+              cat > migration_state 0
             fi      
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
