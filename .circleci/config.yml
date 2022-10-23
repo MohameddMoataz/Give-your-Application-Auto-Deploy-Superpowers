@@ -315,7 +315,7 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/python:3.10
         environment:
           NODE_ENV: production
           VERSION: "1"
