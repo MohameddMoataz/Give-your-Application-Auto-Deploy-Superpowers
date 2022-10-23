@@ -42,7 +42,10 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            echo "Destroying environment: << parameters.workflow_id >> "
+            echo "Destroying environment: ${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+            aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+            aws s3 rm "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
             
   revert-migrations:
     description: Revert the last migration, if any were executed during the current workflow
@@ -54,7 +57,6 @@ commands:
             cd backend
             SUCCESS=$(cat migration_state.txt)
             echo $SUCCESS
-            # Logic for reverting the database state
             if (( $SUCCESS == 1 ));
             then
               cd ~/project/backend
@@ -251,12 +253,14 @@ jobs:
             cd backend
             if grep -q "has been executed successfully." migrations_dump.txt
             then
-              cat > migration_state.txt
               echo 1 >  migration_state.txt 
             else
-              cat > migration_state.txt
               echo 0 >  migration_state.txt 
-            fi      
+            fi
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/backend/migration_state.txt
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations    
@@ -361,11 +365,9 @@ jobs:
       - install_ansible
       - install_awscli
       - install_nodejs
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --no-cache curl
-            apk add --no-cache --upgrade bash
+      - attach_workspace:
+          at: ~/
+
       - run:
           name: backend smoke test
           command: |
