@@ -233,7 +233,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/python:3.10
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - install_awscli
@@ -268,6 +268,17 @@ jobs:
   deploy-frontend:
     docker:
       - image: cimg/python:3.10
+        environment:
+          NODE_ENV: "local"
+          VERSION: "1"
+          ENVIRONMENT: "production"
+          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
+          TYPEORM_HOST: $TYPEORM_HOST
+          TYPEORM_USERNAME: $TYPEORM_USERNAME
+          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
+          TYPEORM_DATABASE: $TYPEORM_DATABASE
+          TYPEORM_PORT: $TYPEORM_PORT
+          TYPEORM_ENTITIES: $TYPEORM_ENTITIES
     steps:
       - checkout
       - install_awscli
@@ -359,7 +370,18 @@ jobs:
 
   smoke-test:
     docker:
-      - image: cimg/python:3.10
+      - image: circleci/node:13.8.0
+        environment:
+          NODE_ENV: "local"
+          VERSION: "1"
+          ENVIRONMENT: "production"
+          TYPEORM_CONNECTION: $TYPEORM_CONNECTION
+          TYPEORM_HOST: $TYPEORM_HOST
+          TYPEORM_USERNAME: $TYPEORM_USERNAME
+          TYPEORM_PASSWORD: $TYPEORM_PASSWORD
+          TYPEORM_DATABASE: $TYPEORM_DATABASE
+          TYPEORM_PORT: $TYPEORM_PORT
+          TYPEORM_ENTITIES: $TYPEORM_ENTITIES      
     steps:
       - checkout
       - install_ansible
