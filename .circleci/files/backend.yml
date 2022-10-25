@@ -53,4 +53,9 @@ Resources:
       ImageId: ami-08c40ec9ead489470
       Tags:
         - Key: Name
-          Value: !Sub backend-${ID}
+            Value: !Sub backend-${ID}
+
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref Logical name of an AWS::EC2::Instance resource  
