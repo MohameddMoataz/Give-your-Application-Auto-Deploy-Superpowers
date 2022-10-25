@@ -1,0 +1,5 @@
+[URL01]:https://github.com/MohameddMoataz/cdond-c3-projectstarter
+[URL02]:http://udapeople-f835faa.s3-website-us-east-1.amazonaws.com/#/employees
+[URL03]:http://d35roxknoyssv2.cloudfront.net/#/employees
+[URL04]:http://3.89.253.204:3030/api/status
+[URL05]:http://54.144.215.108:9090/targets
