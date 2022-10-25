@@ -55,9 +55,3 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
-
-  EIP:
-    Type: AWS::EC2::EIPAssociation
-    Properties:
-      InstanceId: !Ref EC2Instance
-      EIP: 52.87.49.162
